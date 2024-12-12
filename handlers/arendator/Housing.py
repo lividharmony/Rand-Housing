@@ -5,6 +5,7 @@ from aiogram import types, Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
+import constants
 from database import create_db_pool
 from config import ADMINS
 from handlers.keyboards import inline_kb, admin_kb, cancel_kb, location_keyboard, generate_calendar
@@ -21,7 +22,7 @@ def filter_by_id(message: types.Message):
 async def cancel_handler(message: Message, state: FSMContext) -> None:
     await state.clear()
     await message.answer(
-        "Bekor qilindi",
+        constants.cancel_message,
         reply_markup=await admin_kb(message.from_user.id),
     )
 
@@ -29,7 +30,7 @@ async def cancel_handler(message: Message, state: FSMContext) -> None:
 @router.message(F.text == "📃 Housing")
 async def start_admin_housing(message: types.Message, state: FSMContext):
     logging.info("Admin housing command received.")
-    await message.answer("🖊 Uy-joy haqida qisqacha ma'lumot kiriting:", reply_markup=cancel_kb())
+    await message.answer(constants.start_admin_housing_message, reply_markup=cancel_kb())
     await state.set_state(HousingForm.description)
 
 
@@ -37,7 +38,7 @@ async def start_admin_housing(message: types.Message, state: FSMContext):
 async def add_description(message: types.Message, state: FSMContext):
     await state.update_data(description=message.text)
     logging.info("Updated state with description: %s", message.text)
-    await message.answer("💵 Narxni kiriting:")
+    await message.answer(constants.add_price_message)
     await state.set_state(HousingForm.price)
 
 
@@ -47,16 +48,16 @@ async def add_price(message: types.Message, state: FSMContext):
         price = float(message.text)
         await state.update_data(price=price)
         logging.info("Updated state with price: %s", price)
-        await message.answer("📸 rasmni kiriting:")
+        await message.answer(constants.add_image_message)
         await state.set_state(HousingForm.photo)
     except ValueError:
-        await message.answer("🙏🏽 Iltimos, narxni to'g'ri formatda kiriting (faqat son).")
+        await message.answer(constants.add_duration_fail_message)
 
 
 @router.message(HousingForm.photo)
 async def add_image(message: types.Message, state: FSMContext):
     if not message.photo:
-        await message.answer("🙏🏽 Iltimos, rasmni jo'nating.")
+        await message.answer(constants.add_image_fail_message)
         return
     photo_f = message.photo[-1]
 
@@ -68,7 +69,7 @@ async def add_image(message: types.Message, state: FSMContext):
     await message.bot.download_file(file_info.file_path, file_path)
     await state.update_data(photo=file_path, photo_id=photo_f.file_id)
     logging.info("Updated state with photo: %s", file_path)
-    await message.answer("📍 Manzilni kiriting", reply_markup=location_keyboard())
+    await message.answer(constants.add_location_message, reply_markup=location_keyboard())
     await state.set_state(HousingForm.location)
 
 
@@ -82,10 +83,10 @@ async def add_location(message: types.Message, state: FSMContext):
 
         await state.update_data(location={'latitude': lat, 'longitude': lon, 'maps_url': maps_url})
         logging.info("Updated state with location: %s", {'latitude': lat, 'longitude': lon, 'maps_url': maps_url})
-        await message.answer("🗓 Muddatni oyda kiriting (masalan, 6):")
+        await message.answer(constants.add_duration_message)
         await state.set_state(HousingForm.duration)
     else:
-        await message.answer("🙏🏽 Iltimos, lokatsiyani yuboring.")
+        await message.answer(constants.add_location_fail_message)
 
 
 @router.message(HousingForm.duration)
@@ -112,4 +113,4 @@ async def add_duration(message: types.Message, state: FSMContext):
             reply_markup=inline_kb()
         )
     except ValueError:
-        await message.answer("🙏🏽 Iltimos, muddatni to'g'ri formatda kiriting (faqat son).")
+        await message.answer(constants.add_duration_fail_message)

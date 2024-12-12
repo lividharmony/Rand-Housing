@@ -4,6 +4,8 @@ import logging
 from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
+
+import constants
 from database import create_db_pool
 from handlers.keyboards import admin_kb
 
@@ -26,7 +28,7 @@ async def confirm_housing(callback: CallbackQuery, state: FSMContext):
     print("description", description, "price", price, "location", location)
 
     if None in (description, price, photo, location, duration):
-        await callback.answer("Ma'lumotlar to'liq emas. Iltimos, qaytadan urinib ko'ring.")
+        await callback.answer(constants.if_None_in_desc_price_photo_location_duration_message)
         return
 
     pool = await create_db_pool()
@@ -38,7 +40,7 @@ async def confirm_housing(callback: CallbackQuery, state: FSMContext):
         )
 
     await callback.message.delete()
-    await callback.message.answer("✔ Uy-joy muvaffaqiyatli qo'shildi!",
+    await callback.message.answer(constants.housing_successful_added_message,
                                   reply_markup=await admin_kb(callback.from_user.id))
     await state.clear()
     await callback.answer()
@@ -50,12 +52,12 @@ async def reject_housing(callback: CallbackQuery, state: FSMContext):
 
     if callback.message and callback.message.text:
         await callback.message.edit_text(
-            "❌ Ma'lumotlar bekor qilindi.",
+            constants.reject_housing_message,
             reply_markup=await admin_kb(callback.from_user.id)
         )
     else:
         await callback.message.answer(
-            "❌ Ma'lumotlar bekor qilindi.",
+            constants.reject_housing_message,
             reply_markup=await admin_kb(callback.from_user.id)
         )
     await callback.answer()

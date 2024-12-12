@@ -4,6 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from database import create_db_pool
 from config import ADMINS
+import constants
 
 router = Router()
 
@@ -12,7 +13,7 @@ router = Router()
 async def application_callback(callback: CallbackQuery, state: FSMContext):
     housing_id = callback.data.split("_")[1]
     if not housing_id.isdigit():
-        await callback.answer("⚠️Noto'g'ri uy-joy ID!")
+        await callback.answer(constants.wrong_housing_id_message)
         return
 
     housing_id = int(housing_id)
@@ -35,7 +36,7 @@ async def application_callback(callback: CallbackQuery, state: FSMContext):
             )
         except Exception as e:
             logging.error(f"Error inserting application: {e}")
-            await callback.answer("⚠️Arizangizni saqlashda xatolik yuz berdi.")
+            await callback.answer(constants.error_inserting_application_message)
             return
         owner = await connection.fetchrow(
             "SELECT u.user_id FROM housings h JOIN users u ON h.owner_id = u.user_id WHERE h.id = $1",
@@ -52,4 +53,4 @@ async def application_callback(callback: CallbackQuery, state: FSMContext):
                      f"👨🏻 Foydalanuvchi ID: {user_id},\n 🏠 Uy-joy ID: {housing_id}"
                 )
     await state.clear()
-    await callback.answer("🤝 Arizangiz qabul qilindi!")
+    await callback.answer(constants.application_accepted_message)

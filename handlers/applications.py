@@ -3,7 +3,7 @@ from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from .keyboards import admin_kb
 from .register import start_registration
-
+import constants
 router = Router()
 
 
@@ -19,4 +19,4 @@ async def apply_for_housing(message: types.Message, dispatcher: Dispatcher, stat
             await start_registration(message, state)
             return
 
-    await message.answer("Salom! 👋", reply_markup=await admin_kb(message.from_user.id))
+    await message.answer(constants.hello_message, reply_markup=await admin_kb(message.from_user.id))

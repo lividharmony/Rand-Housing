@@ -7,7 +7,7 @@ from handlers.keyboards import cancel_kb, admin_kb, app_inline_kb
 from database import create_db_pool
 from aiogram.types import Message, InputFile
 from handlers.states import SearchState
-
+import constants
 
 router = Router()
 
@@ -17,14 +17,14 @@ async def cancel_handler(message: Message, state: FSMContext) -> None:
     await state.clear()
 
     await message.answer(
-        "Bekor qilindi",
+        text=constants.cancel_kb_message,
         reply_markup=await admin_kb(message.from_user.id),
     )
 
 
 @router.message(F.text == "🔍 Search")
 async def start_search(message: Message, state: FSMContext):
-    await message.answer("🖋 Qidiruv :", reply_markup=cancel_kb())
+    await message.answer(constants.start_search_message, reply_markup=cancel_kb())
     await state.set_state(SearchState.search_query)
 
 
@@ -41,12 +41,12 @@ async def handle_search_query(message: Message, state: FSMContext):
         )
 
     if not housings:
-        await message.answer("❌ Hech narsa topilmadi.")
+        await message.answer(constants.no_housing_found_message)
     else:
         for housing in housings:
             housing_id = housing.get('id')
             if not housing_id:
-                await message.answer("Housing ID is missing.")
+                await message.answer(constants.housing_id_is_missing_message)
                 continue
 
             location = housing['location']
@@ -60,11 +60,11 @@ async def handle_search_query(message: Message, state: FSMContext):
                         location_url = f"https://maps.google.com/?q={latitude},{longitude}"
                         location_text = f"[View on Google Maps]({location_url})"
                     else:
-                        location_text = "Bu locatsiya ma'lumoti to'liq emas"
+                        location_text = constants.location_info_not_full_message
                 except json.JSONDecodeError:
-                    location_text = "⚠️Bu locatsiya ma'lumoti yaroqsiz"
+                    location_text = constants.wrong_location_info_message
             else:
-                location_text = "⚠️Locatsiya taqdim etilmadi."
+                location_text = constants.no_location_message
 
             await message.answer(
                 f"Description🟰 {housing['description']}\n"
