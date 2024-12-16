@@ -15,8 +15,7 @@ Install the required packages using the provided `requirements.txt` file:
 
 ```bash
 pip install -r requirements.txt
-
-Run the bot using the following command:
-
+```
+Run bot.py:
 ```bash
 python bot.py
