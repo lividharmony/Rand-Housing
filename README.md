@@ -2,7 +2,7 @@
 This is a house rental Telegram bot that aims to help:
 Students to find suitable housing
 Houseowners to rent out their housings to students.
-##Installation
+## Installation
 1. Install [Python 3.10](https://www.python.org/downloads/release/python-31010/)
 2. Open console and clone the repository:
    ```bash
