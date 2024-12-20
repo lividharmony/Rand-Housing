@@ -1,4 +1,4 @@
-##About
+## About
 This is a house rental Telegram bot that aims to help:
 Students to find suitable housing
 Houseowners to rent out their housings to students.
