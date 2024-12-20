@@ -32,11 +32,11 @@ To create a new Telegram bot, follow these steps:
 3. Type `/newbot` and follow the instructions to create your bot.  
 4. Once completed, you will receive a **Bot Token**. Save this token securely.
 
-##Create a New Database
+## Create a New Database
 ```bash
 DATABASE_URL = "postgresql://DB_USER:DB_PASSWORD@localhost/DB_NAME"
 ```
-##Run the bot using the following command:
+## Run the bot using the following command:
 ```bash
 python bot.py
 ```
