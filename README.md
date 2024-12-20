@@ -40,7 +40,10 @@ DATABASE_URL = "postgresql://DB_USER:DB_PASSWORD@localhost/DB_NAME"
 ```bash
 python bot.py
 ```
-Run the docker using the following command:
+## Run the docker using the following command:
+1. Open a terminal or command prompt on your computer.
+2. Navigate to the directory where your ```docker-compose.yml``` file is located.
+3. Type ```docker-compose up``` and press Enter.
 ```bash
 docker-compose up
 ```
