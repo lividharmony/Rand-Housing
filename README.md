@@ -33,6 +33,14 @@ To create a new Telegram bot, follow these steps:
 4. Once completed, you will receive a **Bot Token**. Save this token securely.
 
 ## Create a New Database
+To crate a new database, follow the tutorial at [w3schools](https://www.w3schools.com/postgresql/index.php)
+
+## Add your database, bot token and your account id into the program
+Open ".env" file and apply these changes:
+1. Change .env.example into .env
+2. Input your account id (you can take it from @userinfobot) for ADMINS
+3. Input your bot token for BOT_TOKEN
+4. Input your database URL as follows:
 ```bash
 DATABASE_URL = "postgresql://DB_USER:DB_PASSWORD@localhost/DB_NAME"
 ```
